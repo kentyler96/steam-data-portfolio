@@ -1,0 +1,86 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_DB: steam_dbt_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./dags/dbt/init:/docker-entrypoint-initdb.d
+      - postgres-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 5
+  airflow-init:
+    image: apache/airflow:3.0.1-python3.10
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:admin@db/steam_dbt_db
+    command: >
+      bash -c "pip install -r /requirements.txt &&
+        cd /opt/airflow/dbt &&
+        dbt deps &&
+        airflow standalone"
+    volumes:
+      - airflow-data:/opt/airflow
+      - ./requirements.txt:/requirements.txt
+      - ./dags:/opt/airflow/dags
+      - ./dags/dbt:/opt/airflow/dbt 
+      - ./dags/dbt/profiles:/home/airflow/.dbt
+  
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+  #   container_name: elasticsearch
+  #   environment:
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=false
+  #     - xpack.monitoring.collection.enabled=true
+  #     - ES_JAVA_OPTS=-Xms1g -Xmx1g
+  #   ports:
+  #     - "9200:9200"
+  #   volumes:
+  #     - esdata:/usr/share/elasticsearch/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health || exit 1"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:8.13.4
+  #   container_name: kibana
+  #   ports:
+  #     - "5601:5601"
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #   depends_on:
+  #     - elasticsearch
+  
+  # logstash:
+  #   image: docker.elastic.co/logstash/logstash:8.13.4
+  #   container_name: logstash
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #     elasticsearch:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./elastic/logstash/pipeline:/usr/share/logstash/pipeline
+  #     - ./elastic/logstash/logstash-core/lib/jars/postgresql-42.7.3.jar:/usr/share/logstash/logstash-core/lib/jars/postgresql.jar
+  #   ports:
+  #     - "5044:5044"
+  #     - "9600:9600"
+
+volumes:
+  airflow-data:
+  postgres-db:
+  esdata:

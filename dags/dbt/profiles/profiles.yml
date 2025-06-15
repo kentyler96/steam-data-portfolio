@@ -1,0 +1,12 @@
+steam_data_pipeline:
+  target: dev
+  outputs:
+    dev:  # <-- THIS is the target you're using
+      type: postgres
+      host: db
+      user: steam_dbt_role
+      password: password
+      port: 5432
+      dbname: steam_dbt_db
+      schema: steam_dbt_schema  # this is the default schema DBT writes models to
+      threads: 1

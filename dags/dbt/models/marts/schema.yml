@@ -1,0 +1,33 @@
+version: 2
+
+sources:
+  - name: steam_dbt_schema
+    database: steam_dbt_db
+    schema: steam_dbt_schema
+    tables:
+      - name: active_players
+        description: "data mart for active players"
+        columns:
+          - name: appid
+            description: "Unique identifier for app"
+          - name: name
+            description: "Name of the app"
+          - name: player_count
+            description: "player counts for the app"
+          - name: timestamp
+            description: "Timestamp of the data"
+      - name: achievement_percentages
+        description: "data mart for achievement percentages"
+        columns:
+          - name: appid
+            description: "Unique identifier for app"
+          - name: game_name
+            description: "Name of the game"
+          - name: name
+            description: "Name of the achievement"
+          - name: display_name
+            description: "Display name of the achievement"
+          - name: achievement_percent
+            description: "Percentage of players who have achieved this"
+          - name: timestamp
+            description: "Timestamp of the data"

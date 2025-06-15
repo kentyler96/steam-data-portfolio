@@ -1,0 +1,61 @@
+version: 2
+
+sources:
+  - name: steam_dbt_schema
+    database: steam_dbt_db
+    schema: steam_dbt_schema
+    tables:
+      - name: top_100_player_counts
+        description: "Source table for active players data"
+        columns:
+          - name: appid
+            description: "Unique identifier for app"
+          - name: player_count
+            description: "player counts for the app"
+          - name: collected_time
+            description: "Timestamp of the data"
+      - name: steamspy_top_100
+        description: "Source table for SteamSpy data"
+        columns:
+          - name: appid
+            description: "Unique identifier for app"
+          - name: name
+            description: "Name of the app"
+          - name: developer
+            description: "Developer of the app"
+          - name: publisher
+            description: "Publisher of the app"
+          - name: positive_ratings
+            description: "Number of positive ratings"
+          - name: negative_ratings
+            description: "Number of negative ratings"
+      - name: achievement_details
+        description: "Source table for achievement details"
+        columns:
+          - name: appid
+            description: "Unique identifier for app"
+          - name: name
+            description: "Unique name of the achievement"
+          - name: default_value
+            description: "Default value of the achievement"
+          - name: hidden
+            description: "Indicates if the achievement is hidden"
+          - name: display_name
+            description: "Display name of the achievement"
+          - name: description
+            description: "Description of the achievement"
+          - name: icon_link
+            description: "Icon URL for the achievement"
+          - name: icon_gray_link
+            description: "Gray icon URL for the achievement"
+      - name: stg_achievement_percentages
+        description: "Source table for achievement percentages"
+        columns:
+          - name: appid
+            description: "Unique identifier for app"
+          - name: name
+            description: "Name of the achievement"
+          - name: achievement_percent
+            description: "Percentage of players who have achieved this"
+          - name: timestamp
+            description: "Timestamp of the data"

@@ -1,0 +1,2 @@
+pipeline.id: postgres_to_es
+path.config: "./elastic/logstash/pipeline/logstash.conf"
