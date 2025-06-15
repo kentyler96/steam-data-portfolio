@@ -44,7 +44,7 @@ A data pipeline project that collects, processes, and analyzes Steam game and ac
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/yourusername/steam_data_pipeline.git
+    git clone https://github.com/kentyler96/steam_data_pipeline.git
     cd steam_data_pipeline
     ```
 
